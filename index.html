@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don Gestión | World Cup 2026</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/comms-glofy/glofy-assets/refs/heads/main/favicon-don.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --acc: #5B6DE8; --acc2: #8899ff; --dark: #080d1e; --dark2: #0d1428;
+      --dark3: #131d38; --border: rgba(91,109,232,0.18); --text: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+    }
+    html, body { width: 100%; min-height: 100vh; background: var(--dark); font-family: 'Nunito', sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+    #app { max-width: 520px; margin: 0 auto; min-height: 100vh; }
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; min-height: 100vh; animation: fadeUp .4s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    /* HERO */
+    #s0 { position: relative; overflow: hidden; }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(91,109,232,.12) 0%, transparent 70%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(91,109,232,.04) 39px, rgba(91,109,232,.04) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(91,109,232,.04) 39px, rgba(91,109,232,.04) 40px);
+    }
+    .hero-circle { position: absolute; border-radius: 50%; border: 1px solid rgba(91,109,232,.1); animation: pulse 6s ease-in-out infinite; }
+    .hero-circle:nth-child(1) { width: 400px; height: 400px; top: -80px; left: 50%; transform: translateX(-50%); }
+    .hero-circle:nth-child(2) { width: 620px; height: 620px; top: -200px; left: 50%; transform: translateX(-50%); animation-delay: 1.2s; }
+    @keyframes pulse { 0%,100%{opacity:.3;} 50%{opacity:.9;} }
+
+    .hero-bar { height: 5px; background: linear-gradient(90deg, #5B6DE8, #8899ff); }
+    .hero-shirt { position: absolute; right: -20px; bottom: 70px; z-index: 1; opacity: .07; width: 240px; pointer-events: none; }
+    .hero-top { position: relative; z-index: 2; padding: 32px 28px 0; flex: 1; display: flex; flex-direction: column; }
+    .hero-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: rgba(136,153,255,.8); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .hero-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--acc2); }
+    .hero-logo-img { height: 52px; width: auto; max-width: 280px; object-fit: contain; display:block; margin-bottom: 28px; filter: drop-shadow(0 0 12px rgba(91,109,232,.25)); }
+    .hero-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(56px,13vw,80px); line-height: .92; letter-spacing: .5px; color: #fff; margin-bottom: 20px; }
+    .hero-headline em { color: var(--acc2); font-style: normal; }
+    .hero-body { font-size: 15px; line-height: 1.75; color: var(--muted); max-width: 400px; margin-bottom: 32px; }
+    .hero-body strong { color: #fff; font-weight: 700; }
+    .btn-hero { display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; background: var(--acc); color: #fff; font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; transition: transform .15s, box-shadow .15s; margin-bottom: 40px; align-self: flex-start; }
+    .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(91,109,232,.4); }
+    .btn-hero .ball { font-size: 20px; }
+    .hero-thanks { background: rgba(91,109,232,.08); border-top: 1px solid rgba(91,109,232,.2); padding: 20px 28px; display: flex; gap: 14px; align-items: flex-start; position: relative; z-index: 2; }
+    .thanks-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .thanks-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .thanks-text strong { color: var(--acc2); font-weight: 700; }
+
+    /* FORM */
+    #s1 { background: var(--dark2); }
+    .form-inner { padding: 28px; flex: 1; }
+    .form-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .form-badge { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 4px; background: var(--acc); color: #fff; }
+    .form-title { font-family: 'Bebas Neue',sans-serif; font-size: 28px; letter-spacing: 1px; color: #fff; }
+    .fg { margin-bottom: 20px; }
+    .fl { display: block; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .fi { width: 100%; padding: 13px 16px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,.04); font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 600; color: #fff; outline: none; transition: border-color .15s, background .15s; }
+    .fi::placeholder { color: rgba(255,255,255,.2); }
+    .fi:focus { border-color: rgba(91,109,232,.6); background: rgba(91,109,232,.04); }
+    .fhint { font-size: 11px; color: rgba(255,255,255,.25); margin-top: 6px; line-height: 1.4; }
+    .num-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .nb { width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: rgba(255,255,255,.6); font-family: 'Bebas Neue',sans-serif; font-size: 22px; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; }
+    .nb:hover { border-color: rgba(91,109,232,.6); color: #fff; }
+    .nb.sel { background: var(--acc); color: #fff; border-color: var(--acc); }
+    .err { font-size: 11px; color: #ff8080; margin-top: 6px; display: none; }
+    .err.on { display: block; }
+
+    /* Email status */
+    .match-status { display: none; margin-top: 8px; font-size: 12px; padding: 10px 14px; border-radius: 6px; font-weight: 600; line-height: 1.4; }
+    .match-status.found { display: flex; align-items: center; gap: 8px; background: rgba(91,109,232,.1); color: var(--acc2); border: 1px solid rgba(91,109,232,.25); }
+    .match-status.notfound { display: block; background: rgba(255,100,100,.08); color: #ffaaaa; border: 1px solid rgba(255,100,100,.18); }
+    .match-status.personal { display: block; background: rgba(255,180,0,.08); color: #ffcc66; border: 1px solid rgba(255,180,0,.18); }
+
+    /* Quiz options */
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+    .qopt { width: 100%; padding: 11px 16px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: rgba(255,255,255,.7); font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; transition: all .15s; }
+    .qopt:hover { border-color: rgba(91,109,232,.5); color: #fff; }
+    .qopt.sel { border-color: var(--acc); background: rgba(91,109,232,.1); color: #fff; }
+    .qopt.sel::after { content: '✓'; float: right; color: var(--acc2); font-weight: 900; }
+
+    .form-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px 32px; }
+    .btn-back { background: none; border: none; font-family: 'Nunito',sans-serif; font-size: 13px; color: var(--muted); cursor: pointer; padding: 8px 0; transition: color .15s; }
+    .btn-back:hover { color: #fff; }
+    .btn-go { padding: 14px 32px; border-radius: 10px; font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 900; cursor: pointer; border: none; background: var(--acc); color: #fff; transition: transform .15s, box-shadow .15s; }
+    .btn-go:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,109,232,.4); }
+    .btn-go:disabled { opacity: .3; cursor: not-allowed; }
+
+    /* LOADING */
+    #s2 { background: var(--dark2); align-items: center; justify-content: center; text-align: center; padding: 40px 28px; }
+    .load-ball { font-size: 56px; animation: sp 1.4s linear infinite; margin-bottom: 24px; display: inline-block; }
+    @keyframes sp { to { transform: rotate(360deg); } }
+    .load-title { font-family: 'Bebas Neue',sans-serif; font-size: 36px; letter-spacing: 2px; margin-bottom: 8px; }
+    .load-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+    .lsteps { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
+    .lstep { display: flex; align-items: center; gap: 12px; font-size: 13px; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,.04); color: var(--muted); transition: all .4s; }
+    .lstep.on { color: #fff; font-weight: 700; background: rgba(91,109,232,.1); }
+    .lstep.done { opacity: .3; }
+    .ldot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.15); flex-shrink: 0; transition: all .4s; }
+    .lstep.on .ldot { background: var(--acc2); box-shadow: 0 0 0 3px rgba(91,109,232,.25); }
+
+    /* RESULT */
+    #s3 { background: var(--dark2); }
+    .result-inner { padding: 28px; }
+    .result-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .card-wrap { border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: var(--dark3); }
+    #fc { display: block; width: 100%; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .abtn { flex: 1; min-width: 130px; padding: 14px 18px; border-radius: 10px; font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 900; cursor: pointer; border: none; transition: transform .15s, opacity .15s; }
+    .abtn:hover { transform: translateY(-2px); opacity: .9; }
+    .abtn.dl { background: var(--acc); color: #fff; }
+    .abtn.rs { background: rgba(255,255,255,.07); color: rgba(255,255,255,.7); border: 1px solid var(--border); }
+    .err-box { background: rgba(255,80,80,.08); border: 1px solid rgba(255,80,80,.2); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #ff9999; margin-bottom: 16px; display: none; line-height: 1.5; }
+    .err-box.on { display: block; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- S0: HERO -->
+  <div class="screen" id="s0">
+    <div class="hero-bar"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-circle"></div>
+    <div class="hero-circle"></div>
+    <img class="hero-shirt" src="https://raw.githubusercontent.com/comms-glofy/glofy-assets/refs/heads/main/jersey-don.png" alt="" aria-hidden="true">
+    <div class="hero-top">
+      <div class="hero-eyebrow">Don Gestión · World Cup 2026</div>
+      <img class="hero-logo-img" src="https://raw.githubusercontent.com/comms-glofy/glofy-assets/refs/heads/main/don-logo.png" alt="Don Gestión">
+      <h1 class="hero-headline">Un equipo<br>no se arma <em>solo.</em></h1>
+      <p class="hero-body">El Mundial es el momento donde el mundo para y mira a los equipos jugar. Nosotros aprovechamos eso para decir algo simple: <strong>en Don Gestión, cada persona importa.</strong> No como frase, como forma de trabajar.</p>
+      <button class="btn-hero" onclick="goTo(1)">
+        Quiero mi camiseta <span class="ball">⚽</span>
+      </button>
+    </div>
+    <div class="hero-thanks">
+      <div class="thanks-icon">🙌</div>
+      <div class="thanks-text">
+        <strong>Gracias por ser parte de este equipo.</strong><br>
+        Don Gestión es lo que es por las personas que lo construyen todos los días. Eso te incluye y no es poco.
+      </div>
+    </div>
+  </div>
+
+  <!-- S1: FORM -->
+  <div class="screen" id="s1">
+    <div class="form-inner">
+      <div class="form-header">
+        <span class="form-badge">◈ Don Gestión</span>
+        <span class="form-title">TUS DATOS</span>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Mail corporativo</label>
+        <input class="fi" id="jemail" type="email" autocomplete="off" placeholder="nombre@empresa.com" oninput="onEmail(this.value)">
+        <div class="match-status" id="match-status"></div>
+        <p class="err" id="e-email">Ingresá tu mail corporativo.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Nombre en la camiseta</label>
+        <input class="fi" id="jname" type="text" maxlength="12" placeholder="Ej: RODRÍGUEZ" oninput="this.value=this.value.toUpperCase()">
+        <p class="err" id="e-name">Ingresá un nombre.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Tu número</label>
+        <div class="num-grid" id="numgrid"></div>
+        <p class="err" id="e-num">Elegí un número.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Tu posición</label>
+        <input class="fi" id="jpos" type="text" placeholder="Tu puesto real o una posición futbolística">
+        <p class="fhint">ej: CEO, Analista, Delantero, Arquero...</p>
+        <p class="err" id="e-pos">Ingresá tu posición.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">¿Cómo encarás los desafíos?</label>
+        <div class="quiz-opts" id="q1-opts"></div>
+        <p class="err" id="e-q1">Elegí una opción para continuar.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">¿Qué te define en el trabajo?</label>
+        <div class="quiz-opts" id="q2-opts"></div>
+        <p class="err" id="e-q2">Elegí una opción para continuar.</p>
+      </div>
+
+      <div class="fg">
+        <label class="fl">¿Cómo tomás decisiones?</label>
+        <div class="quiz-opts" id="q3-opts"></div>
+        <p class="err" id="e-q3">Elegí una opción para continuar.</p>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="goTo(0)">← Volver</button>
+      <button class="btn-go" id="f-go" onclick="validate()" disabled>Generar mi ficha ⚽</button>
+    </div>
+  </div>
+
+  <!-- S2: LOADING -->
+  <div class="screen" id="s2">
+    <div class="load-ball">⚽</div>
+    <h2 class="load-title">GENERANDO TU FICHA</h2>
+    <p class="load-sub">Un segundo, ya casi está</p>
+    <div class="lsteps">
+      <div class="lstep on" id="ls0"><div class="ldot"></div><span>Cargando tu foto con camiseta</span></div>
+      <div class="lstep" id="ls1"><div class="ldot"></div><span>Componiendo tu ficha</span></div>
+      <div class="lstep" id="ls2"><div class="ldot"></div><span>Últimos toques</span></div>
+    </div>
+  </div>
+
+  <!-- S3: RESULT -->
+  <div class="screen" id="s3">
+    <div class="result-inner">
+      <div class="result-header">
+        <span class="form-badge">◈ Don Gestión</span>
+        <span class="form-title">TU FICHA</span>
+      </div>
+      <div class="err-box" id="errbox"></div>
+      <div class="card-wrap">
+        <canvas id="fc"></canvas>
+      </div>
+      <div class="actions">
+        <button class="abtn dl" onclick="dlCard()">⬇ Descargar</button>
+        <button class="abtn rs" onclick="goTo(0)">↩ Nueva ficha</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+/* ══ ASSETS ══ */
+const LOGO_URL     = 'https://raw.githubusercontent.com/comms-glofy/glofy-assets/refs/heads/main/don-logo.png';
+const PHOTOS_BASE  = 'https://raw.githubusercontent.com/comms-glofy/don-worldcup2026/refs/heads/main/players/';
+const PLAYERS_JSON = 'https://raw.githubusercontent.com/comms-glofy/don-worldcup2026/refs/heads/main/players.json';
+
+/* ══ PLAYERS ══ */
+let PLAYERS = {};
+let playersLoaded = false;
+
+fetch(PLAYERS_JSON)
+  .then(r => r.json())
+  .then(data => {
+    Object.keys(data).forEach(k => { PLAYERS[k.toLowerCase()] = data[k]; });
+    playersLoaded = true;
+    const emailInput = document.getElementById('jemail');
+    if (emailInput && emailInput.value) onEmail(emailInput.value);
+  })
+  .catch(() => { playersLoaded = true; console.warn('players.json no disponible'); });
+
+/* ══ DOMINIOS PERSONALES ══ */
+function isPersonalEmail(email) {
+  const personal = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','protonmail.com','me.com'];
+  const domain = (email.split('@')[1] || '').toLowerCase();
+  return personal.includes(domain);
+}
+
+/* ══ STATE ══ */
+let jemail = '', jname = '', jnum = 10, jpos = '';
+let playerPhotoUrl = null;
+let qAnswers = [null, null, null];
+
+/* ══ QUIZ ══ */
+const QUIZ = [
+  { id: 'q1', opts: ['Con estrategia','Con velocidad','Con el equipo','Con datos'] },
+  { id: 'q2', opts: ['Visión','Ejecución','Conexión','Resolución'] },
+  { id: 'q3', opts: ['Rápido y decidido','Consultando al equipo','Analizando todo','Por intuición'] },
+];
+
+const Q_WEIGHTS = [
+  [[5,0,0],[0,5,0],[0,0,5],[4,0,0]],
+  [[5,0,0],[0,5,0],[0,0,5],[0,4,0]],
+  [[0,5,0],[0,0,5],[5,0,0],[0,4,0]],
+];
+
+function calcStats() {
+  let scores = [0,0,0];
+  qAnswers.forEach((ans, qi) => {
+    if (ans === null) return;
+    const w = Q_WEIGHTS[qi][ans];
+    scores = scores.map((s,i) => s + w[i]);
+  });
+  const base = 88, maxExtra = 15;
+  const vals = scores.map(s => Math.round(base + (s/maxExtra)*11));
+  if (vals[0]===vals[1]) vals[1]=Math.min(99,vals[1]+1);
+  if (vals[1]===vals[2]) vals[2]=Math.min(99,vals[2]+1);
+  if (vals[0]===vals[2]) vals[2]=Math.max(88,vals[2]-1);
+  return [
+    { label:'VISIÓN',            val: Math.min(99,Math.max(88,vals[0])) },
+    { label:'IMPACTO',           val: Math.min(99,Math.max(88,vals[1])) },
+    { label:'TRABAJO EN EQUIPO', val: Math.min(99,Math.max(88,vals[2])) },
+  ];
+}
+
+function renderQuiz() {
+  QUIZ.forEach(({ id, opts }, qi) => {
+    const container = document.getElementById(id+'-opts');
+    container.innerHTML = '';
+    opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'qopt' + (qAnswers[qi]===i?' sel':'');
+      btn.textContent = opt;
+      btn.onclick = () => {
+        qAnswers[qi] = i;
+        container.querySelectorAll('.qopt').forEach((b,j) => b.classList.toggle('sel', j===i));
+        document.getElementById('e-'+id).classList.remove('on');
+      };
+      container.appendChild(btn);
+    });
+  });
+}
+
+/* ══ EMAIL MATCH ══ */
+function onEmail(val) {
+  jemail = val.trim().toLowerCase();
+  const status = document.getElementById('match-status');
+  const goBtn = document.getElementById('f-go');
+
+  if (!jemail || !jemail.includes('@')) {
+    status.className = 'match-status';
+    status.textContent = '';
+    goBtn.disabled = true;
+    playerPhotoUrl = null;
+    return;
+  }
+
+  if (isPersonalEmail(jemail)) {
+    status.className = 'match-status personal';
+    status.textContent = 'Eso parece un mail personal. Usá tu mail corporativo.';
+    goBtn.disabled = true;
+    playerPhotoUrl = null;
+    return;
+  }
+
+  if (!playersLoaded) {
+    status.className = 'match-status personal';
+    status.textContent = 'Verificando tu mail...';
+    goBtn.disabled = true;
+    return;
+  }
+
+  const file = PLAYERS[jemail];
+  if (file) {
+    playerPhotoUrl = PHOTOS_BASE + file;
+    status.className = 'match-status found';
+    status.textContent = '✓ ¡Estás en el plantel!';
+    goBtn.disabled = false;
+  } else {
+    playerPhotoUrl = null;
+    status.className = 'match-status notfound';
+    status.textContent = 'Mail no encontrado. Asegurate de usar exactamente tu mail corporativo.';
+    goBtn.disabled = true;
+  }
+}
+
+/* ══ NUMBERS ══ */
+function buildNums() {
+  const g = document.getElementById('numgrid'); g.innerHTML = '';
+  [1,2,3,4,5,6,7,8,9,10,11,17,21,23,99].forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'nb'+(n===10?' sel':'');
+    b.textContent = n;
+    b.onclick = () => { jnum=n; document.querySelectorAll('.nb').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+    g.appendChild(b);
+  });
+  jnum = 10;
+}
+
+/* ══ NAVIGATION ══ */
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach((s,i) => s.classList.toggle('active', i===n));
+  window.scrollTo(0,0);
+  if (n===0) { qAnswers=[null,null,null]; renderQuiz(); }
+}
+function showErr(id,show){ document.getElementById(id).classList.toggle('on',show); }
+
+function validate() {
+  jname = document.getElementById('jname').value.trim().toUpperCase();
+  jpos  = document.getElementById('jpos').value.trim();
+  let ok = true;
+  if (!playerPhotoUrl){ showErr('e-email',true); ok=false; }else showErr('e-email',false);
+  if (!jname){ showErr('e-name',true); ok=false; }else showErr('e-name',false);
+  if (!jpos){ showErr('e-pos',true); ok=false; }else showErr('e-pos',false);
+  if (qAnswers[0]===null){ showErr('e-q1',true); ok=false; }else showErr('e-q1',false);
+  if (qAnswers[1]===null){ showErr('e-q2',true); ok=false; }else showErr('e-q2',false);
+  if (qAnswers[2]===null){ showErr('e-q3',true); ok=false; }else showErr('e-q3',false);
+  if (ok) buildResult();
+}
+
+/* ══ LOADING ══ */
+function setStep(n){
+  ['ls0','ls1','ls2'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.className='lstep'+(i===n?' on':i<n?' done':'');
+    el.querySelector('.ldot').style.background=i===n?'#8899ff':'';
+  });
+}
+
+/* ══ BUILD RESULT ══ */
+async function buildResult(){
+  goTo(2); setStep(0);
+  document.getElementById('errbox').classList.remove('on');
+  setTimeout(()=>setStep(1),1200);
+  setTimeout(()=>setStep(2),2400);
+  const stats=calcStats();
+  const [logoImg,playerImg]=await Promise.all([loadImg(LOGO_URL),loadImg(playerPhotoUrl)]);
+  await buildCard(logoImg,playerImg,stats);
+  setTimeout(()=>goTo(3),600);
+}
+
+function loadImg(src){
+  return new Promise(resolve=>{
+    const img=new Image(); img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+  });
+}
+
+/* ══ CANVAS — Don Gestión · paleta azul/índigo ══ */
+async function buildCard(logoImg, playerImg, stats=[]) {
+  const canvas = document.getElementById('fc');
+  const ctx = canvas.getContext('2d');
+  const W = 800;
+  const dataZoneH = 360;
+  const photoH = playerImg ? Math.round(playerImg.height*(W/playerImg.width)) : 720;
+  const totalH = photoH + dataZoneH;
+
+  canvas.width = W;
+  canvas.height = totalH;
+
+  // BG
+  ctx.fillStyle = '#080d1e';
+  ctx.fillRect(0,0,W,totalH);
+
+  // Foto completa
+  if (playerImg) ctx.drawImage(playerImg,0,0,W,photoH);
+
+  // Overlay gradiente inferior
+  const ov = ctx.createLinearGradient(0,photoH-220,0,photoH);
+  ov.addColorStop(0,'rgba(8,13,30,0)');
+  ov.addColorStop(0.55,'rgba(8,13,30,0.38)');
+  ov.addColorStop(1,'rgba(8,13,30,0.9)');
+  ctx.fillStyle=ov; ctx.fillRect(0,photoH-220,W,220);
+
+  // Overlay lateral
+  const sv=ctx.createLinearGradient(0,0,180,0);
+  sv.addColorStop(0,'rgba(8,13,30,0.45)'); sv.addColorStop(1,'rgba(8,13,30,0)');
+  ctx.fillStyle=sv; ctx.fillRect(0,0,180,110);
+
+  // Accent bar top — gradiente azul
+  const barGrd=ctx.createLinearGradient(0,0,W,0);
+  barGrd.addColorStop(0,'#5B6DE8'); barGrd.addColorStop(1,'#8899ff');
+  ctx.fillStyle=barGrd; ctx.fillRect(0,0,W,5);
+
+  // Header
+  ctx.fillStyle='rgba(136,153,255,0.85)';
+  ctx.font='700 14px "Nunito",sans-serif';
+  ctx.letterSpacing='3px';
+  ctx.fillText('WORLD CUP 2026',28,38);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='400 13px "Nunito",sans-serif';
+  ctx.letterSpacing='2px';
+  ctx.fillText('PLAYER CARD',28,58);
+  ctx.letterSpacing='0px';
+
+  // Watermark número
+  ctx.save();
+  ctx.globalAlpha=0.07;
+  ctx.fillStyle='#5B6DE8';
+  ctx.font='900 320px "Bebas Neue",sans-serif';
+  ctx.textAlign='right';
+  ctx.fillText(jnum,W+10,photoH-20);
+  ctx.restore();
+  ctx.textAlign='left';
+
+  // Nombre
+  const nameY=photoH+68;
+  let fs=88;
+  ctx.font=`900 ${fs}px "Bebas Neue",sans-serif`;
+  while(ctx.measureText(jname).width>W-56&&fs>48){fs-=4;ctx.font=`900 ${fs}px "Bebas Neue",sans-serif`;}
+  ctx.fillStyle='#ffffff';
+  ctx.fillText(jname,28,nameY);
+
+  // Número + posición
+  const rowY=nameY+58;
+  ctx.fillStyle='#8899ff';
+  ctx.font='700 38px "Bebas Neue",sans-serif';
+  ctx.fillText('#'+jnum,28,rowY);
+  const numW=ctx.measureText('#'+jnum).width;
+
+  ctx.fillStyle='rgba(255,255,255,0.2)';
+  ctx.fillRect(28+numW+14,rowY-28,1.5,30);
+
+  ctx.fillStyle='rgba(255,255,255,0.75)';
+  ctx.font='700 20px "Nunito",sans-serif';
+  ctx.letterSpacing='1px';
+  const posStart=28+numW+30;
+  const posMaxW=W-posStart-28;
+  let posText=jpos.toUpperCase();
+  while(ctx.measureText(posText).width>posMaxW&&posText.length>3)posText=posText.slice(0,-1);
+  if(posText!==jpos.toUpperCase())posText+='...';
+  ctx.fillText(posText,posStart,rowY-4);
+  ctx.letterSpacing='0px';
+
+  // Divider
+  const divY=rowY+30;
+  ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(28,divY);ctx.lineTo(W-28,divY);ctx.stroke();
+
+  // Stats
+  if(stats.length>0){
+    const statY=divY+18;
+    const statW=(W-56)/stats.length;
+
+    stats.forEach((stat,i)=>{
+      const sx=28+i*statW;
+      const cx=sx+statW/2;
+
+      ctx.fillStyle='#8899ff';
+      ctx.font='900 56px "Bebas Neue",sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText(stat.val,cx,statY+50);
+
+      ctx.fillStyle='rgba(255,255,255,0.55)';
+      ctx.font='700 13px "Nunito",sans-serif';
+      ctx.letterSpacing='1.5px';
+      ctx.fillText(stat.label,cx,statY+70);
+      ctx.letterSpacing='0px';
+
+      if(i<stats.length-1){
+        ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(sx+statW,statY+8);ctx.lineTo(sx+statW,statY+76);ctx.stroke();
+      }
+    });
+
+    ctx.textAlign='left';
+    const statDivY=statY+88;
+    ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(28,statDivY);ctx.lineTo(W-28,statDivY);ctx.stroke();
+
+    // Logo
+    ctx.textAlign='center';
+    if(logoImg){
+      const lH=32,lW=logoImg.width*(lH/logoImg.height);
+      ctx.globalAlpha=0.95;
+      ctx.drawImage(logoImg,W/2-lW/2,statDivY+16,lW,lH);
+      ctx.globalAlpha=1;
+    } else {
+      ctx.fillStyle='#8899ff';ctx.font='700 20px "Bebas Neue",sans-serif';
+      ctx.fillText('◈ DON GESTIÓN',W/2,statDivY+40);
+    }
+    ctx.textAlign='left';
+  }
+
+  // Footer
+  const footerGrd=ctx.createLinearGradient(0,0,W,0);
+  footerGrd.addColorStop(0,'#5B6DE8');footerGrd.addColorStop(1,'#8899ff');
+  ctx.fillStyle=footerGrd;
+  ctx.fillRect(0,totalH-42,W,42);
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='700 11px "Nunito",sans-serif';
+  ctx.letterSpacing='2.5px';
+  ctx.textAlign='center';
+  ctx.fillText('WORLD CUP 2026  ·  DON GESTIÓN  ·  UN EQUIPO NO SE ARMA SOLO',W/2,totalH-14);
+  ctx.textAlign='left';
+  ctx.letterSpacing='0px';
+}
+
+/* ══ DOWNLOAD ══ */
+function dlCard(){
+  const a=document.createElement('a');
+  a.download='dongestion-worldcup2026-'+jname.toLowerCase()+'.png';
+  a.href=document.getElementById('fc').toDataURL('image/png');
+  a.click();
+}
+
+/* ══ INIT ══ */
+buildNums();
+renderQuiz();
+goTo(0);
+</script>
+</body>
+</html>
